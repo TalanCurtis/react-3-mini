@@ -31,16 +31,42 @@ class App extends Component {
   getVehicles() {
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get('http://joes-autos.herokuapp.com/api/vehicles')
+    .then((resp)=>{
+      //console.log(resp)
+      //accessing the data property of the response (resp) object.
+      this.setState({vehiclesToDisplay:resp.data})
+      toast.success(`${resp.data.length} found! info got successfully`)
+    }).catch((err)=>{
+      console.error(err);
+      toast.error('Failed to get Vehicals')
+    })
   }
 
   getPotentialBuyers() {
     // axios (GET)
     // setState with response -> buyersToDisplay
+    axios.get("http://joes-autos.herokuapp.com/api/buyers")
+    .then((resp)=>{
+      this.setState({buyersToDisplay: resp.data})
+      toast.success("got potential buyers")
+    }).catch((err)=>{
+      console.error(err)
+      toast.error("failed to get potention buyers")
+    })
   }
 
   sellCar( id ) {
     // axios (DELETE)
     // setState with response -> vehiclesToDisplay
+    axios.delete(`http://joes-autos.herokuapp.com/api/vehicles/${id}`)
+    .then((resp)=>{
+      this.setState({vehiclesToDisplay: resp.data.vehicles})
+      toast.success(' You sold a car YAY!')
+    }).catch((err)=>{
+      console.error(err)
+      toast.error("Failed to sell car")
+    })
   }
 
   filterByMake() {
@@ -48,6 +74,14 @@ class App extends Component {
 
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get(`http://joes-autos.herokuapp.com/api/vehicles/?make=${make}`)
+    .then((resp)=>{
+      this.setState({vehiclesToDisplay:resp.data})
+      toast.success(`found ${resp.data.length}. Filter by make`)
+    }).catch((err)=>{
+      console.log(err);
+      toast.error(" failed to filter make")
+    })
   }
 
   filterByColor() {
@@ -55,11 +89,27 @@ class App extends Component {
 
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get(`http://joes-autos.herokuapp.com/api/vehicles/?color=${color}`)
+    .then((resp)=>{
+      this.setState({vehiclesToDisplay: resp.data})
+      toast.success(`Found ${resp.data.length} of the color`)
+    }).catch((err)=>{
+      console.error(err)
+      toast.error("Failed to filter car by color")
+    })
   }
 
   updatePrice( priceChange, id ) {
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
+    axios.put(`http://joes-autos.herokuapp.com/api/vehicles/${id}/${priceChange}`)
+    .then((resp)=>{
+      this.setState({vehiclesToDisplay: resp.data.vehicles})
+      toast.success('price changed')
+    }).catch((err)=>{
+      console.error(err)
+      toast.error(" price did not update!")
+    })
   }
 
   addCar() {
@@ -67,12 +117,21 @@ class App extends Component {
       make: this.refs.make.value,
       model: this.refs.model.value,
       color: this.refs.color.value,
-      year: this.refs.year.value,
-      price: this.refs.price.value
+      year: this.refs.year.value*1,
+      price: this.refs.price.value*1
     };
 
     // axios (POST)
     // setState with response -> vehiclesToDisplay
+    // post takes a second argument that is body obj
+    axios.post("http://joes-autos.herokuapp.com/api/vehicles", newCar)
+    .then((resp)=>{
+      this.setState({vehiclesToDisplay:resp.data.vehicles})
+      toast.success("Added Car")
+    }).catch((err)=>{
+      console.log(err);
+      toast.error("Car not added, something went wrong")
+    })
   }
 
   addBuyer() {
@@ -84,11 +143,28 @@ class App extends Component {
 
     //axios (POST)
     // setState with response -> buyersToDisplay
+    axios.post("http://joes-autos.herokuapp.com/api/buyers", newBuyer)
+    .then((resp)=>{
+      this.setState({buyersToDisplay: resp.data.buyers})
+      console.log(resp)
+    }).catch((err)=>{
+      console.error(err)
+      toast.error(" failed to add buyer")
+    })
+
   }
 
   deleteBuyer( id ) {
     // axios (DELETE)
     //setState with response -> buyersToDisplay
+    axios.delete(`http://joes-autos.herokuapp.com/api/buyers/${id}`)
+    .then((resp)=>{
+      this.setState({buyersToDisplay: resp.data.buyers})
+      toast.success(" deleted buyer ")
+    }).catch((err)=>{
+      console.error(err)
+      toast.error(' failed to delete buyer')
+    })
   }
 
   nameSearch() {
@@ -96,6 +172,14 @@ class App extends Component {
 
     // axios (GET)
     // setState with response -> buyersToDisplay
+    axios.get(`http://joes-autos.herokuapp.com/api/buyers/?name=${searchLetters}`)
+    .then((resp)=>{
+      this.setState({buyersToDisplay: resp.data})
+      toast.success(" Filtered buyers by name")
+    }).catch((err)=>{
+      console.error(err)
+      toast.error('Failed to filter names')
+    })
   }
 
   byYear() {
@@ -103,6 +187,14 @@ class App extends Component {
 
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get(`http://joes-autos.herokuapp.com/api/vehicles/?year=${year}`)
+    .then((resp)=>{
+      this.setState({vehiclesToDisplay: resp.data});
+      toast.success("Filtered by year")
+    }).catch((err)=>{
+      console.error(err);
+      toast.error(" failed to filter by year")
+    })
   }
 
   // Do not edit the code below
